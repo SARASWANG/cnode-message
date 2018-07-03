@@ -5,11 +5,49 @@ const  md5 = require('md5');
 
 // 渲染登录页面处理函数
 exports.showSignin = (req,res) => {
-    res.send('showSignIn')
+    res.render('signin.html')
 }
 // 处理登录页面处理函数
 exports.handleSignin = (req,res) => {
-    res.send('handleSignIn')
+    // todo
+    // 验证用户名是否存在
+    // 获取表单数据   req.body
+    // 1 验证邮箱是否存在
+    dbMysql.query(
+        "select * from `users` where email = ?",
+        req.body.email ,
+        (error, result) => {  //result 是一个数组，
+            if (error) {
+                return res.json({
+                    conde : 401,
+                    msg : '服务器错误'
+                })
+            }
+            // 验证邮箱是否正确,
+            if (result.length < 0 ) {
+                return res.json({
+                    code : 401,
+                    msg : '邮箱不存在'
+                })
+            }
+            // 上面通过以后，继续验证密码
+            req.body.password = md5(req.body.password)
+            // 密码与数据库中的不匹配返回数据
+            if (req.body.password !== result[0].password) {
+                return res.json({
+                    code : 402,
+                    msg : '密码错误'
+                })
+            }
+            // 登录成功，
+            res.json({
+                code : 200,
+                msg : '登录成功'
+            })
+            
+        }
+    )
+
 }
 
 // 渲染注册页面处理函数

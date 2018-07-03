@@ -48,7 +48,7 @@
       // email=123@11.cn&password=123
       // var data = $(this).serialize();
 
-      
+
       var data = {
         email: $('#email').val(),
         password: $('#password').val()
@@ -58,7 +58,7 @@
       $.post('/signin', data, function (resData) {
         // console.dir(resData);
         // { code: 200, msg: '' }
-
+        // console.log(resData)
         var { code, msg } = resData;
         if (code === 200) {
           location.href = '/';
